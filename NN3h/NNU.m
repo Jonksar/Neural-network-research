@@ -13,7 +13,7 @@ function [testdata, traindata] = NNU(X, Xtest, y, ytest, input)
     lambdam = [0.01, 0.1, 1, 10, 100];
     trainerror = zeros(numel(lambdam), 1);
     testerror = zeros(numel(lambdam), 1);
-    threshold = 8e-5;
+    threshold = 1e-2;
     m = size(X, 1);
 
     for i = 1:m
@@ -89,7 +89,7 @@ function [testdata, traindata] = NNU(X, Xtest, y, ytest, input)
         fprintf('\nTest Set Accuracy: %f\n\n', testerror(L, 1) * 100);
 
         i = 0;
-        while (cost(1) - cost(numel(cost)) > threshold);
+        while (cost(1) - cost(numel(cost)) > threshold) & (i <= 30) ;
             i += 1;
 
             [nn_params, cost] = fmincg(costFunction, nn_params, options);

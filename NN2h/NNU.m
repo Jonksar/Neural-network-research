@@ -7,17 +7,11 @@ function [testdata, traindata] = NNU(X, Xtest, y, ytest, input)
 
     m = size(X, 1);
 
-    for i = 1:m
-        if (y(i) == 0)
-        y(i) = 10;
-        endif
-    endfor
-
     % Variables we will be using
     lambdam = [0.01, 0.1, 1, 10, 100];
     trainerror = zeros(numel(lambdam), 1);
     testerror = zeros(numel(lambdam), 1);
-    threshold = 4e-3;
+    threshold = 4e-2;
 
     % Loop through all lambdas
     for L = 1:numel(lambdam)
@@ -86,7 +80,7 @@ function [testdata, traindata] = NNU(X, Xtest, y, ytest, input)
         testerror(L, 1) = mean(double(test_pred == ytest));
 
         i = 0;
-        while (cost(1) - cost(numel(cost)) > threshold);
+        while (cost(1) - cost(numel(cost)) > threshold) & (i =< 20);
             i += 1;
 
             [nn_params, cost] = fmincg(costFunction, nn_params, options);
