@@ -1,0 +1,11 @@
+# Created by Octave 3.6.4, Fri Apr 10 21:33:20 2015 EEST <kt@stage50>
+# name: trainerror
+# type: scalar
+0.9818
+
+
+# name: testerror
+# type: scalar
+0.86
+
+

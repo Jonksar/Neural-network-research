@@ -1,0 +1,23 @@
+# Created by Octave 3.6.4, Sat Mar 21 20:15:46 2015 EET <kt@stage46>
+# name: trainerror
+# type: matrix
+# rows: 5
+# columns: 1
+ 0.4042
+ 0.213
+ 0.3272
+ 0.1126
+ 0.1126
+
+
+# name: testerror
+# type: matrix
+# rows: 5
+# columns: 1
+ 0.2925
+ 0.22
+ 0.325
+ 0.1425
+ 0.1425
+
+
