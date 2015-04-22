@@ -33,7 +33,11 @@ function [testdata, traindata] = NNU(X, Xtest, y, ytest, input)
     pred = [];
     test_pred = [];
 
+    printf("Input %i defines network with Hidden layer size: %i 2nd Hls: %i 3rd Hls: %i Lambda: %i\n",
+                                            input + 500, hidden_layer_size, hidden_layer_size2, hidden_layer_size3, lambda)
+
     fprintf('\nGenerating initial Neural Network Parameters ...\n')
+
 
     nn_params = zeros(1, sizeT1 + sizeT2 + sizeT3 + sizeT4);
 
@@ -59,8 +63,15 @@ function [testdata, traindata] = NNU(X, Xtest, y, ytest, input)
     % Now, costFunction is a function that takes in only one argument (the
     % neural network parameters) train first with the initial parameters,
     % save results to nn_params.
+    [cost, dummy] = costFunction(initial_nn_params);
 
-    [nn_params, cost] = fmincg(costFunction, initial_nn_params, options);
+    nn_params = initial_nn_params;
+
+    do;
+
+    prev_cost = cost;
+    [nn_params, cost] = fmincg(costFunction, nn_params, options);
+
 
     % Unrolling parameters
     Theta1 = reshape(nn_params(1:sizeT1), ...
@@ -81,43 +92,11 @@ function [testdata, traindata] = NNU(X, Xtest, y, ytest, input)
     trainerror = mean(double(pred == y));
     testerror = mean(double(test_pred == ytest));
     fprintf('\nTraining Set Accuracy: %f', trainerror * 100);
-    fprintf('\nTest Set Accuracy: %f\n\n', testerror * 100);
+    fprintf('\nTest Set Accuracy: %f\n', testerror * 100);
 
-    i = 0;
-    while (cost(1) - cost(numel(cost)) > threshold) & (i <= 20) ;
-        i += 1;
+    until(prev_cost - cost) < threshold;
 
-        [nn_params, cost] = fmincg(costFunction, nn_params, options);
-
-        % Unrolling parameters, keep in mind that nn_params is still ready to go for another training
-        Theta1 = reshape(nn_params(1:sizeT1), ...
-                       hls, (ils + 1));
-
-        Theta2 = reshape(nn_params((sizeT1 + 1):(sizeT1+sizeT2)), ...
-                       hls2, (hls + 1));
-
-        Theta3 = reshape(nn_params((1 + sizeT1 + sizeT2):(sizeT1 + sizeT2 + sizeT3)), ...
-                       hls3, (hls2 + 1));
-
-        Theta4 = reshape(nn_params((1 + sizeT1 + sizeT2 + sizeT3):(sizeT1 + sizeT2 + sizeT3 + sizeT4)), ...
-                       ols, (hls3 + 1));
-
-        % Calculate error on given outer iteration
-        pred = predict(Theta1, Theta2, Theta3, Theta4, X);
-        test_pred = predict(Theta1, Theta2, Theta3, Theta4, Xtest);
-
-        % Save data into variables
-        trainerror = mean(double(pred == y));
-        testerror = mean(double(test_pred == ytest));
-
-        fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred == y)) * 100);
-        fprintf('\nTest Set Accuracy: %f\n', mean(double(test_pred == ytest)) * 100);
-        fprintf('\nTraining iteration: %i, Hidden layer size: %i 2nd Hls %i 3rd Hls %i\n',
-                                            i, hidden_layer_size, hidden_layer_size2, hidden_layer_size3);
-
-    endwhile
-
-
-    save(sprintf("NN3h-%d-%d-%d-L%d", hls, hls2, hls3, order_matrix(4, input)), "trainerror", "testerror")
+    printf("Saving file %s", sprintf("NN3h-%d-%d-%d-L%d", hls, hls2, hls3, order_matrix(input, 4)))
+    save(sprintf("NN3h-%d-%d-%d-L%d", hls, hls2, hls3, order_matrix(input, 4)), "trainerror", "testerror")
 
 endfunction

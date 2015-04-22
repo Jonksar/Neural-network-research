@@ -20,7 +20,7 @@ W = zeros(Lout, 1 + Lin);
 %
 
 
-epsiloninit = 0.12;
+epsiloninit = 0.9;
 W = rand(Lout, 1 + Lin) * 2 * epsiloninit - epsiloninit;
 
 

@@ -45,9 +45,7 @@ function [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)
 % [ml-class] Changes Made:
 % 1) Function name and argument specifications
 % 2) Output display
-% [Joonatan samuel] Changes made:
-% 1) Save cost into vector cost (approx line 152)
-cost = 0;
+%
 
 % Read options
 if exist('options', 'var') && ~isempty(options) && isfield(options, 'MaxIter')
@@ -149,7 +147,6 @@ while i < abs(length)                                      % while not finished
   if success                                         % if line search succeeded
     f1 = f2; fX = [fX' f1]';
     fprintf('%s %4i | Cost: %4.6e\r', S, i, f1);
-    cost(i) = f1;
     s = (df2'*df2-df1'*df2)/(df1'*df1)*s - df2;      % Polack-Ribiere direction
     tmp = df1; df1 = df2; df2 = tmp;                         % swap derivatives
     d2 = df1'*s;
@@ -175,4 +172,4 @@ while i < abs(length)                                      % while not finished
     fflush(stdout);
   end
 end
-fprintf('\n');
+
